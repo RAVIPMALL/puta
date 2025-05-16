@@ -1,0 +1,249 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - PUTA Teachers Association</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>PUTA</h1>
+            <p>Teachers Association</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'president-message' %}">President's Message</a></li>
+                <li><a href="{% url 'events' %}" class="active">Events</a></li>
+                <li><a href="{% url 'members' %}">Members</a></li>
+                <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                <li><a href="{% url 'join' %}">Join Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>Events</h2>
+            <p>Stay updated with our upcoming and past events</p>
+        </div>
+    </div>
+
+    <section class="events-section">
+        <div class="container">
+            <div class="event-filter">
+                <ul class="filter-tabs">
+                    <li><a href="#upcoming" class="active"><i class="fas fa-calendar-alt"></i> Upcoming Events</a></li>
+                    <li><a href="#past"><i class="fas fa-history"></i> Past Events</a></li>
+                </ul>
+            </div>
+            
+            <div id="upcoming" class="event-tab active">
+                <h3>Upcoming Events</h3>
+                <div class="event-listing">
+                    {% for event in events %}
+                    {% if event.event_date >= now %}
+                    <div class="event-card">
+                        <div class="event-status status-upcoming">
+                            <i class="fas fa-calendar-check"></i> Upcoming
+                        </div>
+                        <div class="event-image-gallery">
+                            {% if event.event_image %}
+                            <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="main-image">
+                            {% endif %}
+                            {% if event.images.exists %}
+                            <div class="event-thumbnails">
+                                {% for img in event.images.all %}
+                                <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="thumbnail" 
+                                     onclick="showImage(this.src, '{{ img.caption|escapejs }}')">
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="event-details">
+                            <h4>{{ event.title }}</h4>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> {{ event.event_location }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ event.event_date|date:"F d, Y" }}</span>
+                            </div>
+                            <div class="event-description">
+                                {{ event.content|safe }}
+                                {% if event.long_description %}
+                                <div class="long-description">
+                                    <h5>Event Details</h5>
+                                    {{ event.long_description|safe }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% empty %}
+                    <div class="no-events">
+                        <i class="fas fa-calendar-xmark fa-3x" style="color: #ddd; margin-bottom: 20px;"></i>
+                        <p>No upcoming events at the moment. Please check back later!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div id="past" class="event-tab">
+                <h3>Past Events</h3>
+                <div class="event-listing">
+                    {% for event in events %}
+                    {% if event.event_date < now %}
+                    <div class="event-card">
+                        <div class="event-status status-past">
+                            <i class="fas fa-check-circle"></i> Completed
+                        </div>
+                        <div class="event-image-gallery">
+                            {% if event.event_image %}
+                            <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="main-image">
+                            {% endif %}
+                            {% if event.images.exists %}
+                            <div class="event-thumbnails">
+                                {% for img in event.images.all %}
+                                <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="thumbnail" 
+                                     onclick="showImage(this.src, '{{ img.caption|escapejs }}')">
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="event-details">
+                            <h4>{{ event.title }}</h4>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> {{ event.event_location }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ event.event_date|date:"F d, Y" }}</span>
+                            </div>
+                            <div class="event-description">
+                                {{ event.content|safe }}
+                                {% if event.long_description %}
+                                <div class="long-description">
+                                    <h5>Event Details</h5>
+                                    {{ event.long_description|safe }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% empty %}
+                    <div class="no-events">
+                        <i class="fas fa-history fa-3x" style="color: #ddd; margin-bottom: 20px;"></i>
+                        <p>No past events available.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="image-modal" class="modal">
+        <span class="close">&times;</span>
+        <img id="modal-image" src="" alt="">
+        <div id="modal-caption"></div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PUTA</h3>
+                    <p>Empowering Educators</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'events' %}">Events</a></li>
+                        <li><a href="{% url 'members' %}">Members</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                {% if contact_content %}
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    {% if contact_content.address %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ contact_content.address|linebreaksbr }}</p>
+                    {% endif %}
+                    {% if contact_content.phone %}
+                    <p><i class="fas fa-phone"></i> {{ contact_content.phone }}</p>
+                    {% endif %}
+                    {% if contact_content.email %}
+                    <p><i class="fas fa-envelope"></i> {{ contact_content.email }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} PUTA Teachers Association. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'core/script.js' %}"></script>
+    <script>
+        // Image gallery functionality
+        function showImage(src, caption) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-image');
+            const modalCaption = document.getElementById('modal-caption');
+            
+            modal.style.display = "block";
+            modalImg.src = src;
+            modalCaption.innerHTML = caption;
+        }
+
+        // Close modal
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('image-modal').style.display = "none";
+        }
+
+        // Tab switching functionality with smooth transitions
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.filter-tabs a');
+            const tabContents = document.querySelectorAll('.event-tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => {
+                        c.classList.remove('active');
+                        c.style.display = 'none';
+                    });
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding content with fade effect
+                    const targetContent = document.querySelector(this.getAttribute('href'));
+                    targetContent.style.display = 'block';
+                    setTimeout(() => {
+                        targetContent.classList.add('active');
+                    }, 10);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,112 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>President's Message - PUTA Teachers Association</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>PUTA</h1>
+            <p>Teachers Association</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %} ">Home</a></li>
+                <li><a href="{% url 'president-message' %}" class=active">President's Message</a></li>
+                <li><a href="{% url 'events' %}">Events</a></li>
+                <li><a href="{% url 'members' %}">Members</a></li>
+                <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                <li><a href="{% url 'join' %}">Join Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>From the Desk of PUTA President</h2>
+        </div>
+    </div>
+
+    <section class="president-message">
+        <div class="container">
+            <div class="message-content">
+                <div class="president-profile">
+                    <div class="profile-image">
+                        <img src="{{ president_message.president_image.url }}" alt="{{ president_message.name }} - PUTA President">
+                    </div>
+                    <div class="president-info">
+                        <h3>{{ president_message.president_name }}</h3>
+                        <h3>{{ president_message.name }}</h3>
+                        <p class="president-title">{{ president_message.designation }}</p>
+                        <!--<div class="president-credentials">
+                            <p><strong>Department:</strong> {{ president_message.department }}</p>
+                            <p><strong>Email:</strong> {{ president_message.email }}</p>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="message-text">
+                    <h4>Message from the President</h4>
+                    {{ president_message.message|safe }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PUTA</h3>
+                    <p>Empowering educators and shaping futures since 1985.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'events' %}">Events</a></li>
+                        <li><a href="{% url 'members' %}">Members</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                {% if contact_content %}
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    {% if contact_content.address %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ contact_content.address|linebreaksbr }}</p>
+                    {% endif %}
+                    {% if contact_content.phone %}
+                    <p><i class="fas fa-phone"></i> {{ contact_content.phone }}</p>
+                    {% endif %}
+                    {% if contact_content.email %}
+                    <p><i class="fas fa-envelope"></i> {{ contact_content.email }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} PUTA Teachers Association. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html> 

@@ -1,0 +1,207 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantnagar University Teachers Association</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .news-ticker {
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            padding: 10px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .news-ticker-content {
+            white-space: nowrap;
+            animation: ticker 20s linear infinite;
+            display: inline-block;
+            padding-right: 50px;
+        }
+        
+        .news-update {
+            display: inline-block;
+            margin-right: 50px;
+            padding: 5px 15px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: highlight 2s ease-in-out infinite;
+        }
+        
+        .news-update.priority {
+            background: #ffe8e8;
+            border-left: 4px solid #ff4444;
+        }
+        
+        @keyframes ticker {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        @keyframes highlight {
+            0%, 100% {
+                background: #fff;
+            }
+            50% {
+                background: #f0f8ff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            {% if home_content %}
+            <h1>{{ home_content.name }}</h1>
+            <p>{{ home_content.description }}</p>
+            {% endif %}
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}" class=active>Home</a></li>
+                <li><a href="{% url 'president-message' %}">President's Message</a></li>
+                <li><a href="{% url 'events' %}">Events</a></li>
+                <li><a href="{% url 'members' %}">Members</a></li>
+                <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                <li><a href="{% url 'join' %}">Join Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <div class="news-ticker">
+        <div class="news-ticker-content">
+            {% for update in updates %}
+                <div class="news-update {% if update.priority > 0 %}priority{% endif %}">
+                    <strong>{{ update.title }}:</strong> {{ update.content }}
+                </div>
+            {% empty %}
+                <div class="news-update">Welcome to PUTA - Empowering educators and shaping futures</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <section class="hero">
+        {% if home_content %}
+        <div class="hero-content">
+            <h2>{{ home_content.hero_title }}</h2>
+            <p>{{ home_content.hero_subtitle }}</p>
+            <a href="{% url 'join' %}" class="btn">Join Today</a>
+        </div>
+        {% if home_content.featured_image %}
+        <img src="{{ home_content.featured_image.url }}" alt="Featured Image" class="hero-image">
+        {% endif %}
+        {% else %}
+        <div class="hero-content">
+            <h2>Welcome to the Teachers Association</h2>
+            <p>Empowering educators and shaping futures</p>
+            <a href="{% url 'join' %}" class="btn">Join Today</a>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="featured-content">
+        <div class="container">
+            {% if home_content %}
+            {{ home_content.content|safe }}
+            {% else %}
+            <div class="feature-box">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Upcoming Events</h3>
+                <p>Participate in workshops, seminars, and social gatherings.</p>
+                <a href="{% url 'events' %}" class="btn-small">View Events</a>
+            </div>
+            <div class="feature-box">
+                <i class="fas fa-bullhorn"></i>
+                <h3>President's Message</h3>
+                <p>Read the latest message from our association president.</p>
+                <a href="{% url 'president-message' %}" class="btn-small">Read More</a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="recent-events">
+        <div class="container">
+            <h2>Recent Events</h2>
+            <div class="event-grid">
+                {% for event in events|slice:":5" %}
+                <div class="event-card">
+                    {% if event.event_image %}
+                    <img src="{{ event.event_image.url }}" alt="{{ event.title }}">
+                    {% endif %}
+                    <div class="event-info">
+                        <h3>{{ event.title }}</h3>
+                        <p class="event-date">{{ event.event_date|date:"F d, Y" }}</p>
+                        <p>{{ event.content|truncatewords:20 }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                {% endfor %}
+            </div>
+            <div class="center">
+                <a href="{% url 'events' %}" class="btn">View All Events</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PUTA</h3>
+                    <p>Empowering Educators</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'events' %}">Events</a></li>
+                        <li><a href="{% url 'members' %}">Members</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                {% if contact_content %}
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    {% if contact_content.address %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ contact_content.address|linebreaksbr }}</p>
+                    {% endif %}
+                    {% if contact_content.phone %}
+                    <p><i class="fas fa-phone"></i> {{ contact_content.phone }}</p>
+                    {% endif %}
+                    {% if contact_content.email %}
+                    <p><i class="fas fa-envelope"></i> {{ contact_content.email }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} PUTA Teachers Association. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'core/script.js' %}"></script>
+</body>
+</html> 

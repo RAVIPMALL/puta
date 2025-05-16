@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members - PUTA Teachers Association</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>PUTA</h1>
+            <p>Teachers Association</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'president-message' %}">President's Message</a></li>
+                <li><a href="{% url 'events' %}">Events</a></li>
+                <li><a href="{% url 'members' %}" class="active">Members</a></li>
+                <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                <li><a href="{% url 'join' %}">Join Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>Member Directory</h2>
+            <p>Meet our distinguished members and executive committee</p>
+        </div>
+    </div>
+
+    <section class="members-section">
+        <div class="container">
+            
+            <div class="members-filter">
+                <ul class="filter-tabs">
+                    <li><a href="#executive" class="active" data-filter="executive">
+                        <i class="fas fa-star"></i> Executive Committee
+                    </a></li>
+                    <li><a href="#general" data-filter="general">
+                        <i class="fas fa-users"></i> General Members
+                    </a></li>
+                </ul>
+            </div>
+            
+            <div id="executive" class="members-group active">
+                <h3>Executive Committee Members</h3>
+                <div class="members-grid">
+                    {% for member in members %}
+                    {% if member.is_executive_member %}
+                    <div class="member-card">
+                        <div class="member-photo">
+                            {% if member.member_image %}
+                            <img src="{{ member.member_image.url }}" alt="{{ member.member_name }}">
+                            {% else %}
+                            <img src="{% static 'core/images/member-default.jpg' %}" alt="{{ member.member_name }}">
+                            {% endif %}
+                            <div class="member-designation">
+                                {{ member.get_society_designation_display }}
+                            </div>
+                        </div>
+                        <div class="member-info">
+                            <h3>{{ member.member_name }}</h3>
+                            <p class="member-title">{{ member.member_position }}</p>
+                            <div class="member-contact">
+                                <a href="mailto:{{ member.email }}" class="member-email">
+                                    <i class="fas fa-envelope"></i> {{ member.email }}
+                                </a>
+                                {% if member.phone_number %}
+                                <a href="tel:{{ member.phone_number }}" class="member-phone">
+                                    <i class="fas fa-phone"></i> {{ member.phone_number }}
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div class="member-bio">
+                                {{ member.member_bio|safe|truncatewords:30 }}
+                            </div>
+                            <div class="member-footer">
+                                <span class="member-since">
+                                    <i class="fas fa-calendar-alt"></i> Member since {{ member.date_of_joining|date:"F Y" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="general" class="members-group">
+                <h3>General Members</h3>
+                <div class="members-grid">
+                    {% for member in members %}
+                    {% if not member.is_executive_member %}
+                    <div class="member-card">
+                        <div class="member-photo">
+                            {% if member.member_image %}
+                            <img src="{{ member.member_image.url }}" alt="{{ member.member_name }}">
+                            {% else %}
+                            <img src="{% static 'core/images/member-default.jpg' %}" alt="{{ member.member_name }}">
+                            {% endif %}
+                        </div>
+                        <div class="member-info">
+                            <h3>{{ member.member_name }}</h3>
+                            <p class="member-title">{{ member.member_position }}</p>
+                            <div class="member-contact">
+                                <a href="mailto:{{ member.email }}" class="member-email">
+                                    <i class="fas fa-envelope"></i> {{ member.email }}
+                                </a>
+                                {% if member.phone_number %}
+                                <a href="tel:{{ member.phone_number }}" class="member-phone">
+                                    <i class="fas fa-phone"></i> {{ member.phone_number }}
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div class="member-bio">
+                                {{ member.member_bio|safe|truncatewords:30 }}
+                            </div>
+                            <div class="member-footer">
+                                <span class="member-since">
+                                    <i class="fas fa-calendar-alt"></i> Member since {{ member.date_of_joining|date:"F Y" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PUTA</h3>
+                    <p>Empowering Educators</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'events' %}">Events</a></li>
+                        <li><a href="{% url 'members' %}">Members</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                {% if contact_content %}
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    {% if contact_content.address %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ contact_content.address|linebreaksbr }}</p>
+                    {% endif %}
+                    {% if contact_content.phone %}
+                    <p><i class="fas fa-phone"></i> {{ contact_content.phone }}</p>
+                    {% endif %}
+                    {% if contact_content.email %}
+                    <p><i class="fas fa-envelope"></i> {{ contact_content.email }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} PUTA Teachers Association. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'core/script.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.filter-tabs a');
+            const memberGroups = document.querySelectorAll('.members-group');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs and groups
+                    tabs.forEach(t => t.classList.remove('active'));
+                    memberGroups.forEach(g => {
+                        g.classList.remove('active');
+                        g.style.display = 'none';
+                    });
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding group with fade effect
+                    const targetGroup = document.querySelector(this.getAttribute('href'));
+                    targetGroup.style.display = 'block';
+                    setTimeout(() => {
+                        targetGroup.classList.add('active');
+                    }, 10);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
